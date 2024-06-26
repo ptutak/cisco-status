@@ -1,6 +1,5 @@
 import io
 import os
-import typing
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
@@ -15,31 +14,31 @@ class Command(ABC):
     @classmethod
     @abstractmethod
     def parse(cls, textfsm_output: list[list[str]]) -> "Command":
-        """_summary_
+        """Parse the command into a concrete struct.
 
         Args:
-            textfsm_output (list[list[str]]): _description_
+            textfsm_output (list[list[str]]): Textfsm output parsed from a router.
 
         Returns:
-            _type_: _description_
+            Command: A created command.
         """
 
 
-class CiscoConfigCommandParser:
-    def __init__(self, template: io.IOBase, command_parser: type[Command]) -> None:
+class CiscoConfigCommandParser[T: Command]:
+    def __init__(self, template: io.IOBase, command_parser: type[T]) -> None:
         self._config_parser = textfsm.TextFSM(template)
         self._command_parser = command_parser
 
-    def parse(self, config: str) -> Command:
+    def parse(self, config: str) -> T:
         result = self._config_parser.ParseText(config)
         return self._command_parser.parse(result)
 
     @classmethod
-    def from_string(cls, template: str, command_parser: type[Command]) -> "CiscoConfigCommandParser":
+    def from_string(cls, template: str, command_parser: type[T]) -> "CiscoConfigCommandParser[T]":
         return cls(io.StringIO(template), command_parser)
 
     @classmethod
-    def from_path(cls, template_path: os.PathLike[str], command_parser: type[Command]) -> "CiscoConfigCommandParser":
+    def from_path(cls, template_path: os.PathLike[str], command_parser: type[T]) -> "CiscoConfigCommandParser[T]":
         with open(template_path) as file:
             return cls(file, command_parser)
 

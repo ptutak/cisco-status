@@ -8,7 +8,7 @@ Value Required Standby (\S+)
 Value Required VirtualIP ([0-9\.]+)
 
 Start
-    ^Interface\s+Grp\s+Pri\s+P\s+State\s+Active\s+Standby\s+Virtual IP -> Record HSRPConf
+  ^Interface\s+Grp\s+Pri\s+P\s+State\s+Active\s+Standby\s+Virtual IP -> Record HSRPConf
 
 HSRPConf
-    ^${Interface}\s+${Group}\s+${Pri}\s+${P}\s+${State}\s+${Active}\s+${Standby}\s+${VirtualIP} -> Record HSRPConf
+  ^${Interface}\s+${Group}\s+${Pri}\s+${P}\s+${State}\s+${Active}\s+${Standby}\s+${VirtualIP} -> Record HSRPConf
