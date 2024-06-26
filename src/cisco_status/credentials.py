@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class RouterCredentials(BaseModel):  # type:ignore
     name: str
     host: str
@@ -9,4 +10,4 @@ class RouterCredentials(BaseModel):  # type:ignore
 
 
 def parse_router_credentials(config: str) -> RouterCredentials:
-    return RouterCredentials.model_validate_json(config)
+    return RouterCredentials.model_validate_json(config)  # type: ignore
