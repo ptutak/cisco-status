@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from .client import CiscoRouter
+from .client import CiscoRouter, Router
 from .credentials import RouterCredentials, parse_router_credentials
 from .desired_config import DesiredHSRPConfig, parse_desired_hsrp_config
 from .resolver import RouterHSRPResolver
@@ -29,13 +29,15 @@ def hsrp_status(
 
     routers = [parse_router_credentials(router_creds) for router_creds in router_credentials]
 
-    result = resolve_router_config(routers, desired_router_config)
+    result = resolve_router_config(routers, desired_router_config, CiscoRouter)
 
     click.echo(json.dumps(result, indent=2))
 
 
 def resolve_router_config(
-    routers_credentials: list[RouterCredentials], routers_config: list[DesiredHSRPConfig]
+    routers_credentials: list[RouterCredentials],
+    routers_config: list[DesiredHSRPConfig],
+    router: type[Router],
 ) -> list[dict[str, dict[str, list[dict[str, str]]]]]:
     desired_router_config = _contract_router_configs(routers_config)
     router_result: list[dict[str, dict[str, list[dict[str, str]]]]] = []
@@ -43,8 +45,8 @@ def resolve_router_config(
     for credentials in routers_credentials:
         if credentials.name not in desired_router_config:
             raise RuntimeError(f"Router: {credentials.name} has no desired state.")
-        router = CiscoRouter.from_credentials(credentials)
-        resolver = RouterHSRPResolver(credentials.name, router, desired_router_config[credentials.name])
+        concrete_router = router.from_credentials(credentials)
+        resolver = RouterHSRPResolver(credentials.name, concrete_router, desired_router_config[credentials.name])
         router_result.append(resolver.resolve_router_config())
 
     return router_result

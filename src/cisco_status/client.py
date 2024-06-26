@@ -17,6 +17,11 @@ class Router(ABC):
             str: Show standby brief command result.
         """
 
+    @classmethod
+    @abstractmethod
+    def from_credentials(cls, credentials: RouterCredentials) -> "Router":
+        pass
+
 
 class CiscoRouter(Router):
     DEFAULT_DEVICE = "cisco_ios"

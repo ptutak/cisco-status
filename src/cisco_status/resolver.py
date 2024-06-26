@@ -1,9 +1,10 @@
-
 from typing import cast
+
 from .client import Router
 from .commands import CiscoConfigCommandParser, ShowStandbyBrief, StandbyConfig
 from .desired_config import DesiredHSRPConfig
 from .template_commands import TemplateCommand
+
 
 class RouterHSRPResolver:
     _parser = CiscoConfigCommandParser.from_path(TemplateCommand.SHOW_STANDBY_BRIEF, ShowStandbyBrief)
@@ -18,8 +19,9 @@ class RouterHSRPResolver:
         command: ShowStandbyBrief = cast(ShowStandbyBrief, self._parser.parse(result))
         return self._get_router_standby_config(command.config, self._desired_config)
 
-
-    def _get_router_standby_config(self, config: list[StandbyConfig], desired_config: list[DesiredHSRPConfig]) -> dict[str, dict[str, list[dict[str, str]]]]:
+    def _get_router_standby_config(
+        self, config: list[StandbyConfig], desired_config: list[DesiredHSRPConfig]
+    ) -> dict[str, dict[str, list[dict[str, str]]]]:
         result: dict[str, dict[str, list[dict[str, str]]]] = {self._name: {}}
         for desired_config_entry in desired_config:
             passed = False

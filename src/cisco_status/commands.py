@@ -33,6 +33,7 @@ class CiscoConfigCommandParser:
 
     def parse(self, config: str) -> Command:
         result = self._config_parser.ParseText(config)
+        self._config_parser.Reset()
         return self._command_parser.parse(result)
 
     @classmethod
