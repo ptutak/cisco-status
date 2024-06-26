@@ -35,11 +35,13 @@ class CommandXY(Command):
 def test_config_parser():
     parser = CiscoConfigCommandParser.from_string(test_template, CommandXY)
 
-    result = parser.parse("""
+    result = parser.parse(
+        """
 X   Y
 3   4
 5   6
-""")
+"""
+    )
 
     result.print()
 

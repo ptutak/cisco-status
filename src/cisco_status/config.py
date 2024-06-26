@@ -1,9 +1,11 @@
-from abc import ABC, abstractmethod
-import typing
-import textfsm
 import io
 import os
+import typing
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
+
+import textfsm
+
 
 class Command(ABC):
     @abstractmethod
@@ -24,7 +26,7 @@ class Command(ABC):
 
 
 class CiscoConfigCommandParser:
-    def __init__(self, template: io.FileIO, command_parser: type[Command]) -> None:
+    def __init__(self, template: io.IOBase, command_parser: type[Command]) -> None:
         self._config_parser = textfsm.TextFSM(template)
         self._command_parser = command_parser
 
@@ -37,7 +39,7 @@ class CiscoConfigCommandParser:
         return cls(io.StringIO(template), command_parser)
 
     @classmethod
-    def from_path(cls, template_path: os.PathLike, command_parser: type[Command]):
+    def from_path(cls, template_path: os.PathLike[str], command_parser: type[Command]) -> "CiscoConfigCommandParser":
         with open(template_path) as file:
             return cls(file, command_parser)
 
@@ -52,6 +54,7 @@ class StandbyConfig:
     Active: str
     Standby: str
     VirtualIP: str
+
 
 class ShowStandbyBrief(Command):
     def __init__(self, config: list[StandbyConfig]):
