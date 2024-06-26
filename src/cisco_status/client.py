@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 from netmiko import BaseConnection, ConnectHandler
 
+from .credentials import RouterCredentials
+
 
 class Router(ABC):
     @abstractmethod
@@ -19,9 +21,7 @@ class Router(ABC):
 class CiscoRouter(Router):
     DEFAULT_DEVICE = "cisco_ios"
 
-    def __init__(
-        self, host: str, username: str, password: str, secret: str | None = None
-    ) -> None:
+    def __init__(self, host: str, username: str, password: str, secret: str | None = None) -> None:
         self._host = host
         self._username = username
         self._password = password
@@ -45,3 +45,7 @@ class CiscoRouter(Router):
             password=self._password,
             secret=self._secret,
         )
+
+    @classmethod
+    def from_credentials(cls, credentials: RouterCredentials) -> "CiscoRouter":
+        return cls(credentials.host, credentials.username, credentials.password, credentials.secret)

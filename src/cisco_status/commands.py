@@ -45,7 +45,7 @@ class CiscoConfigCommandParser:
             return cls(file, command_parser)
 
 
-@dataclass
+@dataclass(frozen=True)
 class StandbyConfig:
     Interface: str
     Group: int
@@ -59,7 +59,7 @@ class StandbyConfig:
 
 class ShowStandbyBrief(Command):
     def __init__(self, config: list[StandbyConfig]):
-        self._config = config
+        self.config = config
 
     @classmethod
     def parse(cls, textfsm_output: list[list[str]]) -> "ShowStandbyBrief":
@@ -73,5 +73,5 @@ class ShowStandbyBrief(Command):
         return cls(configs)
 
     def print(self) -> None:
-        for config in self._config:
+        for config in self.config:
             print(config)

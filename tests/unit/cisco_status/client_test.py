@@ -1,31 +1,46 @@
-import netmiko
+from pytest import fixture
 
-class MyHandler:
-    def __init__(self, args, kwargs):
-        self.args = args
-        self.kwargs = kwargs
-        self.commands = []
+from cisco_status.client import CiscoRouter
+from cisco_status.credentials import RouterCredentials
 
-    def find_prompt(self):
-        return ""
 
-    def send_command(self, command):
-        self.commands.append(command)
-        return "xyzz"
+@fixture
+def my_cisco_mock(monkeypatch):
+    class MyHandler:
+        def __init__(self, args, kwargs):
+            pass
 
-    def __enter__(self):
-        return self
+        def find_prompt(self):
+            return ""
 
-    def __exit__(self, *args):
-        return None
+        def send_command(self, command):
+            return "xyzz"
 
-def get_my_connect_handler(*args, **kwargs):
-    return MyHandler(args, kwargs)
+        def __enter__(self):
+            return self
 
-def test_cisco_router(monkeypatch):
-    monkeypatch.setattr(netmiko, "ConnectHandler", get_my_connect_handler)
-    from cisco_status.client import CiscoRouter
+        def __exit__(self, *args):
+            return None
+
+    def get_my_connection(*args, **kwargs):
+        return MyHandler(args, kwargs)
+
+    monkeypatch.setattr(CiscoRouter, "_connection", get_my_connection)
+
+    return MyHandler
+
+
+def test_cisco_router(my_cisco_mock):
 
     router = CiscoRouter("some-host", "username", "password", "secret")
 
+    assert router.show_standby_brief() == "xyzz"
+
+
+def test_cisco_router_factory(my_cisco_mock):
+    router = CiscoRouter.from_credentials(
+        RouterCredentials(name="name", host="some-host", username="username", password="password", secret="secret")
+    )
+
+    assert isinstance(router, CiscoRouter)
     assert router.show_standby_brief() == "xyzz"

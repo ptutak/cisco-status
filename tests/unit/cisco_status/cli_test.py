@@ -1,5 +1,5 @@
-from cisco_status.cli import hello
+from cisco_status.cli import hsrp_status
 
 
 def test_hello():
-    assert hello() == "Hello World"
+    assert True

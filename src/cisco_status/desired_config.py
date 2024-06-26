@@ -5,7 +5,8 @@ from pydantic import BaseModel
 
 from .const import HSRPState
 
-class DesiredHSRPConfig(BaseModel):
+
+class DesiredHSRPConfig(BaseModel):  # type:ignore
     name: str
     interface: str
     group: int
@@ -14,7 +15,6 @@ class DesiredHSRPConfig(BaseModel):
     @classmethod
     def from_dict(cls, router_desired_config: dict[str, Any]) -> "DesiredHSRPConfig":
         return cls(**router_desired_config)
-
 
 
 def parse_desired_hsrp_config(config: str) -> list[DesiredHSRPConfig]:
