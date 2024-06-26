@@ -1,5 +1,5 @@
 def hello() -> str:
-    """Hello Func
+    """Hello Func.
 
     Returns:
         str: Hello World
