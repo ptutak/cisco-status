@@ -1,0 +1,14 @@
+Value Required Interface ([\w/]+)
+Value Required Group (\d+)
+Value Required Pri (\d+)
+Value Required P (\w)
+Value Required State (\w+)
+Value Required Active (\S+)
+Value Required Standby (\S+)
+Value Required VirtualIP ([0-9\.]+)
+
+Start
+    ^Interface\s+Grp\s+Pri\s+P\s+State\s+Active\s+Standby\s+Virtual IP -> Record HSRPConf
+
+HSRPConf
+    ^${Interface}\s+${Group}\s+${Pri}\s+${P}\s+${State}\s+${Active}\s+${Standby}\s+${VirtualIP} -> Record HSRPConf
