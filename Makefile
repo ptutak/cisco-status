@@ -1,3 +1,9 @@
+.PHONY: install
+install:
+	@echo "Installing packages..."
+	@pip install .
+	@echo "Done."
+
 .PHONY: install-dev
 install-dev:
 	@echo "Installing dev packages..."

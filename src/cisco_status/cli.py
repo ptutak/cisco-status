@@ -11,14 +11,14 @@ from .resolver import RouterHSRPResolver
 
 @click.group()  # type: ignore
 def cli() -> None:
-    """Cli Command Group."""
+    """Cisco Status Cli Tool."""
 
 
 @cli.command()  # type: ignore
 @click.option(  # type: ignore
-    "--hsrp-config-file", type=click.Path(exists=True, readable=True, file_okay=True, dir_okay=False, path_type=Path)
+    "--hsrp-config-file", type=click.Path(exists=True, readable=True, file_okay=True, dir_okay=False, path_type=Path), required=True
 )
-@click.option("-r", "--router-credentials", multiple=True, type=str)  # type: ignore
+@click.option("-r", "--router-credentials", multiple=True, type=str, required=True)  # type: ignore
 def hsrp_status(
     hsrp_config_file: Path,
     router_credentials: list[str],
@@ -79,3 +79,7 @@ def _contract_router_configs(router_configs: list[DesiredHSRPConfig]) -> dict[st
         result[config.name].append(config)
 
     return result
+
+
+if __name__ == "__main__":
+    cli()  # pragma: no cover

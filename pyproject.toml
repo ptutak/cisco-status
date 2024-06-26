@@ -19,6 +19,9 @@ readme = "README.md"
 license = {file = "LICENSE"}
 dynamic = ["version"]
 
+[project.scripts]
+cisco-status = "cisco_status.cli:cli"
+
 [tool.isort]
 profile = "black"
 
