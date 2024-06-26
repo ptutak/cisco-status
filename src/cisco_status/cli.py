@@ -16,7 +16,9 @@ def cli() -> None:
 
 @cli.command()  # type: ignore
 @click.option(  # type: ignore
-    "--hsrp-config-file", type=click.Path(exists=True, readable=True, file_okay=True, dir_okay=False, path_type=Path), required=True
+    "--hsrp-config-file",
+    type=click.Path(exists=True, readable=True, file_okay=True, dir_okay=False, path_type=Path),
+    required=True,
 )
 @click.option("-r", "--router-credentials", multiple=True, type=str, required=True)  # type: ignore
 def hsrp_status(
