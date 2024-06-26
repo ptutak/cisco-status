@@ -1,11 +1,5 @@
 # cisco-status
 
-## usage
-
-```bash
-$ cisco-status --help
-```
-
 ## install
 
 To install the package, run the following command:
@@ -18,4 +12,10 @@ or you can just install via pip:
 
 ```bash
 pip install .
+```
+
+## usage
+
+```bash
+python -m cisco_status.cli --help
 ```
