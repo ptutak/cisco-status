@@ -78,3 +78,6 @@ def test_resolve_router_config_fail():
             }
         },
     ]
+
+
+# TODO: cli tests
