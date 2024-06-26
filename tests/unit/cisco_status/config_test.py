@@ -34,7 +34,7 @@ class CommandXY(Command):
 
 
 def test_config_parser():
-    parser = CiscoConfigCommandParser[CommandXY].from_string(test_template, CommandXY)
+    parser = CiscoConfigCommandParser.from_string(test_template, CommandXY)
 
     result = parser.parse(
         """
@@ -48,12 +48,14 @@ X   Y
 
 
 def test_show_standby_brief():
-    parser = CiscoConfigCommandParser[ShowStandbyBrief].from_path(TemplateCommand.SHOW_STANDBY_BRIEF, ShowStandbyBrief)
+    parser = CiscoConfigCommandParser.from_path(TemplateCommand.SHOW_STANDBY_BRIEF, ShowStandbyBrief)
 
-    result = parser.parse("""
+    result = parser.parse(
+        """
 Interface   Grp  Pri P State   Active          Standby         Virtual IP
 Gi0/0/1     1    110 P Active  local           82.0.0.3        82.0.0.1
 Gi0/0/1     2    105 P Standby 82.0.0.11       local           82.0.0.9
-""")
+"""
+    )
 
     result.print()

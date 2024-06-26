@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from netmiko import ConnectHandler
+
+from netmiko import BaseConnection, ConnectHandler
+
 
 class Router(ABC):
     @abstractmethod
@@ -10,7 +12,9 @@ class Router(ABC):
 class CiscoRouter(Router):
     DEFAULT_DEVICE = "cisco_ios"
 
-    def __init__(self, host: str, username: str, password: str, secret: str | None = None, device_type: str = DEFAULT_DEVICE) -> None:
+    def __init__(
+        self, host: str, username: str, password: str, secret: str | None = None, device_type: str = DEFAULT_DEVICE
+    ) -> None:
         self._host = host
         self._username = username
         self._password = password
@@ -21,17 +25,17 @@ class CiscoRouter(Router):
         with self._connection() as connection:
             connection.find_prompt()
             result = connection.send_command("show standby brief")
+            if isinstance(result, str):
+                return result
             if isinstance(result, list):
-                result = "\n".join(str(line) for line in result)
-            if isinstance(result, dict):
-                raise RuntimeError("Wrong output")
-            return result
+                return "\n".join(str(line) for line in result)
+            raise RuntimeError("Wrong output")
 
-    def _connection(self):
+    def _connection(self) -> BaseConnection:
         return ConnectHandler(
             device_type=self._device_type,
             host=self._host,
             username=self._username,
             password=self._password,
-            secret=self._secret
+            secret=self._secret,
         )
