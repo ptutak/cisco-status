@@ -2,9 +2,10 @@ import io
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from .const import HSRPState
 
 import textfsm
+
+from .const import HSRPState
 
 
 class Command(ABC):
@@ -65,7 +66,9 @@ class ShowStandbyBrief(Command):
         configs: list[StandbyConfig] = []
 
         for row in textfsm_output:
-            configs.append(StandbyConfig(row[0], int(row[1]), int(row[2]), row[3], HSRPState(row[4]), row[5], row[6], row[7]))
+            configs.append(
+                StandbyConfig(row[0], int(row[1]), int(row[2]), row[3], HSRPState(row[4]), row[5], row[6], row[7])
+            )
 
         return cls(configs)
 

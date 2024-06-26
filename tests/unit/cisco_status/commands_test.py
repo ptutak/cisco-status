@@ -1,4 +1,4 @@
-from cisco_status.config import CiscoConfigCommandParser, Command, ShowStandbyBrief
+from cisco_status.commands import CiscoConfigCommandParser, Command, ShowStandbyBrief
 from cisco_status.template_commands import TemplateCommand
 
 test_template = r"""Value Required X (\S+)
