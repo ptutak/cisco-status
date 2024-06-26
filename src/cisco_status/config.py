@@ -1,16 +1,18 @@
 from abc import ABC, abstractmethod
+import typing
 import textfsm
 import io
 import os
+from dataclasses import dataclass
 
-
-class CommandParser(ABC):
-    @classmethod
-    def from_config(cls, textfsm_output: list[list[str]]) -> "CommandParser":
-        return cls(textfsm_output)
-
+class Command(ABC):
     @abstractmethod
-    def parse(self, textfsm_output: list[list[str]]):
+    def print(self) -> None:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def parse(cls, textfsm_output: list[list[str]]) -> "Command":
         """_summary_
 
         Args:
@@ -21,21 +23,49 @@ class CommandParser(ABC):
         """
 
 
-class CiscoConfigParser:
-    def __init__(self, template: io.FileIO, ) -> None:
-        self._parser = textfsm.TextFSM(template)
+class CiscoConfigCommandParser:
+    def __init__(self, template: io.FileIO, command_parser: type[Command]) -> None:
+        self._config_parser = textfsm.TextFSM(template)
+        self._command_parser = command_parser
 
-    def parse(self, config: str) -> list[str]:
-        result = self._parser.ParseText(config)
-
-    @classmethod
-    def from_string(cls, template: str) -> "CiscoConfigParser":
-        return cls(io.StringIO(template))
+    def parse(self, config: str) -> Command:
+        result = self._config_parser.ParseText(config)
+        return self._command_parser.parse(result)
 
     @classmethod
-    def from_path(cls, template_path: os.PathLike):
+    def from_string(cls, template: str, command_parser: type[Command]) -> "CiscoConfigCommandParser":
+        return cls(io.StringIO(template), command_parser)
+
+    @classmethod
+    def from_path(cls, template_path: os.PathLike, command_parser: type[Command]):
         with open(template_path) as file:
-            return cls(file)
+            return cls(file, command_parser)
 
 
-class HSRPConfig
+@dataclass
+class StandbyConfig:
+    Interface: str
+    Group: int
+    Priority: int
+    Preemptive: str
+    State: str
+    Active: str
+    Standby: str
+    VirtualIP: str
+
+class ShowStandbyBrief(Command):
+    def __init__(self, config: list[StandbyConfig]):
+        self._config = config
+
+    @classmethod
+    def parse(cls, textfsm_output: list[list[str]]) -> "ShowStandbyBrief":
+        configs: list[StandbyConfig] = []
+
+        for row in textfsm_output:
+            configs.append(StandbyConfig(row[0], int(row[1]), int(row[2]), row[3], row[4], row[5], row[6], row[7]))
+
+        return cls(configs)
+
+    def print(self) -> None:
+        for config in self._config:
+            print(config)
