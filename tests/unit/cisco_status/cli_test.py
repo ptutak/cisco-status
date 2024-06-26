@@ -59,7 +59,6 @@ def test_resolve_router_config_fail():
         DesiredHSRPConfig(name="CE2", interface="Gi0/0/1", group=2, state=HSRPState.Standby),
     ]
     result = resolve_router_config(credentials, desired_configs, MyRouter)
-    print(result)
 
     assert result == [
         {

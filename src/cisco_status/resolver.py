@@ -7,8 +7,6 @@ from .template_commands import TemplateCommand
 
 
 class RouterHSRPResolver:
-    _parser = CiscoConfigCommandParser.from_path(TemplateCommand.SHOW_STANDBY_BRIEF, ShowStandbyBrief)
-
     def __init__(self, name: str, router: Router, routers_desired_config: list[DesiredHSRPConfig]):
         self._name = name
         self._router = router
@@ -16,7 +14,7 @@ class RouterHSRPResolver:
 
     def resolve_router_config(self) -> dict[str, dict[str, list[dict[str, str]]]]:
         result = self._router.show_standby_brief()
-        command: ShowStandbyBrief = cast(ShowStandbyBrief, self._parser.parse(result))
+        command: ShowStandbyBrief = ShowStandbyBrief.parse(result)
         return self._get_router_standby_config(command.config, self._desired_config)
 
     def _get_router_standby_config(

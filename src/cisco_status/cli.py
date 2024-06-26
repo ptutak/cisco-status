@@ -11,7 +11,7 @@ from .resolver import RouterHSRPResolver
 
 @click.group()  # type: ignore
 def cli() -> None:
-    """Cli Group."""
+    """Cli Command Group."""
 
 
 @cli.command()  # type: ignore
@@ -23,7 +23,12 @@ def hsrp_status(
     hsrp_config_file: Path,
     router_credentials: list[str],
 ) -> None:
+    """Print the HSRP status of the routers.
 
+    Args:
+        hsrp_config_file (Path): HSRP Desired state config file.
+        router_credentials (list[str]): List of router credentials.
+    """
     with open(hsrp_config_file) as desired_config:
         desired_router_config = parse_desired_hsrp_config(desired_config.read())
 
@@ -39,6 +44,19 @@ def resolve_router_config(
     routers_config: list[DesiredHSRPConfig],
     router: type[Router],
 ) -> list[dict[str, dict[str, list[dict[str, str]]]]]:
+    """Resolve the router config.
+
+    Args:
+        routers_credentials (list[RouterCredentials]): List of router credentials.
+        routers_config (list[DesiredHSRPConfig]): List of desired router config.
+        router (type[Router]): Router class.
+
+    Raises:
+        RuntimeError: If the router has no desired state.
+
+    Returns:
+        list[dict[str, dict[str, list[dict[str, str]]]]]: List of resolved router config.
+    """
     desired_router_config = _contract_router_configs(routers_config)
     router_result: list[dict[str, dict[str, list[dict[str, str]]]]] = []
 

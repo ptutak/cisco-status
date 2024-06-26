@@ -6,48 +6,76 @@ from dataclasses import dataclass
 import textfsm
 
 from .const import HSRPState
+from .template_commands import TemplateCommand
 
 
 class Command(ABC):
-    @abstractmethod
-    def print(self) -> None:
-        pass
+    """Command interface."""
 
     @classmethod
     @abstractmethod
-    def parse(cls, textfsm_output: list[list[str]]) -> "Command":
+    def parse(cls, config: str) -> "Command":
         """Parse the command into a concrete struct.
 
         Args:
-            textfsm_output (list[list[str]]): Textfsm output parsed from a router.
-
-        Returns:
-            Command: A created command.
+            config (str): Command output.
         """
 
 
 class CiscoConfigCommandParser:
-    def __init__(self, template: io.IOBase, command_parser: type[Command]) -> None:
-        self._config_parser = textfsm.TextFSM(template)
-        self._command_parser = command_parser
+    """Cisco configuration command parser."""
 
-    def parse(self, config: str) -> Command:
+    def __init__(self, template: io.IOBase) -> None:
+        """Create a new CiscoConfigCommandParser instance.
+
+        Args:
+            template (io.IOBase): Template file.
+        """
+        self._config_parser = textfsm.TextFSM(template)
+
+    def parse(self, config: str) -> list[list[str]]:
+        """Parse the configuration.
+
+        Args:
+            config (str): Configuration to parse.
+
+        Returns:
+            list[list[str]]: Parsed configuration.
+        """
         result = self._config_parser.ParseText(config)
         self._config_parser.Reset()
-        return self._command_parser.parse(result)
+        return result  # type: ignore
 
     @classmethod
-    def from_string(cls, template: str, command_parser: type[Command]) -> "CiscoConfigCommandParser":
-        return cls(io.StringIO(template), command_parser)
+    def from_string(cls, template: str) -> "CiscoConfigCommandParser":
+        """Create a new CiscoConfigCommandParser instance from a string.
+
+        Args:
+            template (str): Template string.
+
+        Returns:
+            CiscoConfigCommandParser: Instance of the parser.
+        """
+        return cls(io.StringIO(template))
 
     @classmethod
-    def from_path(cls, template_path: os.PathLike[str], command_parser: type[Command]) -> "CiscoConfigCommandParser":
+    def from_path(cls, template_path: os.PathLike[str]) -> "CiscoConfigCommandParser":
+        """Create a new CiscoConfigCommandParser instance from a path.
+
+        Args:
+            template_path (os.PathLike[str]): Path to the template file.
+
+        Returns:
+            CiscoConfigCommandParser: Instance of the parser.
+        """
         with open(template_path) as file:
-            return cls(file, command_parser)
+            return cls(file)
 
 
 @dataclass(frozen=True)
 class StandbyConfig:
+    """Standby configuration."""
+
     Interface: str
     Group: int
     Priority: int
@@ -59,11 +87,28 @@ class StandbyConfig:
 
 
 class ShowStandbyBrief(Command):
+    """Show standby brief command."""
+
     def __init__(self, config: list[StandbyConfig]):
+        """Create a new ShowStandbyBrief instance.
+
+        Args:
+            config (list[StandbyConfig]): Standby configuration.
+        """
         self.config = config
 
     @classmethod
-    def parse(cls, textfsm_output: list[list[str]]) -> "ShowStandbyBrief":
+    def parse(cls, config: str) -> "ShowStandbyBrief":
+        """Parse the show standby brief command.
+
+        Args:
+            config (str): Command output.
+
+        Returns:
+            ShowStandbyBrief: Instance of the command.
+        """
+        parser = CiscoConfigCommandParser.from_path(TemplateCommand.SHOW_STANDBY_BRIEF)
+        textfsm_output = parser.parse(config)
         configs: list[StandbyConfig] = []
 
         for row in textfsm_output:
@@ -72,7 +117,3 @@ class ShowStandbyBrief(Command):
             )
 
         return cls(configs)
-
-    def print(self) -> None:
-        for config in self.config:
-            print(config)

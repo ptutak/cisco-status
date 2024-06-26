@@ -1,5 +1,10 @@
-from cisco_status.commands import CiscoConfigCommandParser, Command, ShowStandbyBrief
-from cisco_status.template_commands import TemplateCommand
+from cisco_status.commands import (
+    CiscoConfigCommandParser,
+    Command,
+    ShowStandbyBrief,
+    StandbyConfig,
+)
+from cisco_status.const import HSRPState
 
 test_template = r"""Value Required X (\S+)
 Value Required Y (\S+)
@@ -14,11 +19,15 @@ XY
 
 class CommandXY(Command):
     def __init__(self, x: list[str], y: list[str]):
-        self._x = x
-        self._y = y
+        self.x = x
+        self.y = y
 
     @classmethod
-    def parse(cls, textfsm_config: list[list[str]]) -> "CommandXY":
+    def parse(cls, config: str) -> "CommandXY":
+        parser = CiscoConfigCommandParser.from_string(test_template)
+
+        textfsm_config = parser.parse(config)
+
         xs: list[str] = []
         ys: list[str] = []
 
@@ -28,29 +37,21 @@ class CommandXY(Command):
 
         return CommandXY(xs, ys)
 
-    def print(self) -> None:
-        print(self._x)
-        print(self._y)
-
 
 def test_config_parser():
-    parser = CiscoConfigCommandParser.from_string(test_template, CommandXY)
-
-    result = parser.parse(
+    result = CommandXY.parse(
         """
 X   Y
 3   4
 5   6
 """
     )
-
-    result.print()
+    assert result.x == ["3", "5"]
+    assert result.y == ["4", "6"]
 
 
 def test_show_standby_brief():
-    parser = CiscoConfigCommandParser.from_path(TemplateCommand.SHOW_STANDBY_BRIEF, ShowStandbyBrief)
-
-    result = parser.parse(
+    result = ShowStandbyBrief.parse(
         """
 Interface   Grp  Pri P State   Active          Standby         Virtual IP
 Gi0/0/1     1    110 P Active  local           82.0.0.3        82.0.0.1
@@ -58,4 +59,7 @@ Gi0/0/1     2    105 P Standby 82.0.0.11       local           82.0.0.9
 """
     )
 
-    result.print()
+    assert result.config == [
+        StandbyConfig("Gi0/0/1", 1, 110, "P", HSRPState.Active, "local", "82.0.0.3", "82.0.0.1"),
+        StandbyConfig("Gi0/0/1", 2, 105, "P", HSRPState.Standby, "82.0.0.11", "local", "82.0.0.9"),
+    ]
