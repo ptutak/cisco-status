@@ -7,6 +7,8 @@ from .const import HSRPState
 
 
 class DesiredHSRPConfig(BaseModel):  # type:ignore
+    """Desired HSRP configuration."""
+
     name: str
     interface: str
     group: int
@@ -14,10 +16,29 @@ class DesiredHSRPConfig(BaseModel):  # type:ignore
 
     @classmethod
     def from_dict(cls, router_desired_config: dict[str, Any]) -> "DesiredHSRPConfig":
+        """Create a DesiredHSRPConfig instance from a dictionary.
+
+        Args:
+            router_desired_config (dict[str, Any]): Router desired config.
+
+        Returns:
+            DesiredHSRPConfig: Desired HSRP configuration instance.
+        """
         return cls(**router_desired_config)
 
 
 def parse_desired_hsrp_config(config: str) -> list[DesiredHSRPConfig]:
+    """Parse the desired HSRP configuration.
+
+    Args:
+        config (str): Desired HSRP configuration.
+
+    Raises:
+        RuntimeError: If the config is invalid.
+
+    Returns:
+        list[DesiredHSRPConfig]: List of desired HSRP configurations.
+    """
     parsed_config: dict[str, Any] = json.loads(config)
     if "hsrp" not in parsed_config:
         raise RuntimeError("Invalid config")

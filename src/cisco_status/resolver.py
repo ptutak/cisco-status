@@ -1,18 +1,29 @@
-from typing import cast
-
 from .client import Router
-from .commands import CiscoConfigCommandParser, ShowStandbyBrief, StandbyConfig
+from .commands import ShowStandbyBrief, StandbyConfig
 from .desired_config import DesiredHSRPConfig
-from .template_commands import TemplateCommand
 
 
 class RouterHSRPResolver:
+    """Router HSRP Resolver."""
+
     def __init__(self, name: str, router: Router, routers_desired_config: list[DesiredHSRPConfig]):
+        """Create a new RouterHSRPResolver instance.
+
+        Args:
+            name (str): Router name.
+            router (Router): Router client.
+            routers_desired_config (list[DesiredHSRPConfig]): List of desired router config.
+        """
         self._name = name
         self._router = router
         self._desired_config = routers_desired_config
 
     def resolve_router_config(self) -> dict[str, dict[str, list[dict[str, str]]]]:
+        """Resolve the router config.
+
+        Returns:
+            dict[str, dict[str, list[dict[str, str]]]]: Resolved router config.
+        """
         result = self._router.show_standby_brief()
         command: ShowStandbyBrief = ShowStandbyBrief.parse(result)
         return self._get_router_standby_config(command.config, self._desired_config)
