@@ -1,4 +1,3 @@
-from pytest import fixture
 from click.testing import CliRunner
 from cisco_status.cli import cli, RouterCredentials
 from pathlib import Path
@@ -7,6 +6,14 @@ from pathlib import Path
 class MyRouter:
     def __init__(self, creds: RouterCredentials):
         self._creds = creds
+        if self._creds.name == "CE1":
+            assert self._creds.host == "host-1"
+            assert self._creds.username == "username-1"
+            assert self._creds.password == "password-1"
+        if self._creds.name == "CE2":
+            assert self._creds.host == "host-2"
+            assert self._creds.username == "username-2"
+            assert self._creds.password == "password-2"
 
     def show_standby_brief(self):
         if self._creds.name == "CE1":

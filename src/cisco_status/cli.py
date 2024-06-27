@@ -62,6 +62,8 @@ def resolve_router_config(
     desired_router_config = _contract_router_configs(routers_config)
     router_result: list[dict[str, dict[str, list[dict[str, str]]]]] = []
 
+    # to make it more efficient we could use async parallelization here
+    # but I didn't want to overcomplicate the code
     for credentials in routers_credentials:
         if credentials.name not in desired_router_config:
             raise RuntimeError(f"Router: {credentials.name} has no desired state.")
