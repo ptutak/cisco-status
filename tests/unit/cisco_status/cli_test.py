@@ -1,8 +1,6 @@
-from pytest import fixture
-
-from cisco_status.cli import DesiredHSRPConfig, RouterCredentials, resolve_router_config, cli
+from cisco_status.cli import DesiredHSRPConfig, RouterCredentials, resolve_router_config
 from cisco_status.const import HSRPState
-from click.testing import CliRunner
+
 
 class MyRouter:
     def __init__(self, creds: RouterCredentials):
@@ -78,7 +76,3 @@ def test_resolve_router_config_fail():
             }
         },
     ]
-
-def test_cli():
-    runner = CliRunner()
-    # result = runner.invoke(cli, ["--hsrp-config-file", "", "--router-credentials", "CE1,host-1,username-1,password-1", "--router-credentials", "CE2,host-2,username-2,password-2"])
