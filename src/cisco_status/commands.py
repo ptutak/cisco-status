@@ -8,6 +8,10 @@ import textfsm
 from .const import HSRPState
 from .template_commands import TemplateCommand
 
+# Possibly we want to implement more commands here that share the same interface
+# it might be helpful for some future improvements and extensions although not really
+# necessary for the current implementation
+
 
 class Command(ABC):
     """Command interface."""
@@ -95,7 +99,16 @@ class ShowStandbyBrief(Command):
         Args:
             config (list[StandbyConfig]): Standby configuration.
         """
-        self.config = config
+        self._config = config
+
+    @property
+    def config(self) -> list[StandbyConfig]:
+        """Get the configuration.
+
+        Returns:
+            list[StandbyConfig]: Standby configuration.
+        """
+        return self._config
 
     @classmethod
     def parse(cls, config: str) -> "ShowStandbyBrief":
