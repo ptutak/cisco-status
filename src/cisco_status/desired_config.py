@@ -20,6 +20,7 @@ class DesiredHSRPConfig(BaseModel):  # type:ignore
         """Create a DesiredHSRPConfig instance from a dictionary.
 
         Args:
+            name (str): Router name.
             router_desired_config (dict[str, Any]): Router desired config.
 
         Returns:

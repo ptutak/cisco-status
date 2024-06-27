@@ -117,7 +117,8 @@ def test_cli(mock_cisco_router, tmp_path: Path):
     }
   ]
 }
-""")
+"""
+    )
     assert result.exit_code == 0
 
 
