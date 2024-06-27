@@ -25,12 +25,7 @@ def hsrp_status(
     hsrp_config_file: Path,
     router_credentials: list[str],
 ) -> None:
-    """Print the HSRP status of the routers.
-
-    Args:
-        hsrp_config_file (Path): HSRP Desired state config file.
-        router_credentials (list[str]): List of router credentials.
-    """
+    """Print the HSRP status of the routers."""  # noqa: DCO020
     with open(hsrp_config_file) as desired_config:
         desired_router_config = parse_desired_hsrp_config(desired_config.read())
 
