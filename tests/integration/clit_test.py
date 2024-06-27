@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from click.testing import CliRunner
+from pytest import fixture
 
 from cisco_status.cli import RouterCredentials, cli
 
@@ -35,7 +36,12 @@ Gi0/0/1     2    110 P Active  local           82.0.0.10       82.0.0.9
         return MyRouter(creds)
 
 
-def test_cli(monkeypatch, tmp_path: Path):
+@fixture
+def mock_cisco_router(monkeypatch):
+    monkeypatch.setattr("cisco_status.cli.CiscoRouter", MyRouter)
+
+
+def test_cli(mock_cisco_router, tmp_path: Path):
     tmp_config_file = tmp_path / "hsrp-config.json"
     tmp_config_file.write_text(
         r"""{
@@ -64,7 +70,6 @@ def test_cli(monkeypatch, tmp_path: Path):
 }"""
     )
 
-    monkeypatch.setattr("cisco_status.cli.CiscoRouter", MyRouter)
     runner = CliRunner()
     result = runner.invoke(
         cli,
@@ -111,7 +116,7 @@ def test_cli(monkeypatch, tmp_path: Path):
     assert result.exit_code == 0
 
 
-def test_cli_fail(monkeypatch, tmp_path: Path):
+def test_cli_fail(mock_cisco_router, tmp_path: Path):
     tmp_config_file = tmp_path / "hsrp-config.json"
     tmp_config_file.write_text(
         r"""{
@@ -140,7 +145,6 @@ def test_cli_fail(monkeypatch, tmp_path: Path):
 }"""
     )
 
-    monkeypatch.setattr("cisco_status.cli.CiscoRouter", MyRouter)
     runner = CliRunner()
     result = runner.invoke(
         cli,
