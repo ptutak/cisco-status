@@ -1,6 +1,8 @@
-from click.testing import CliRunner
-from cisco_status.cli import cli, RouterCredentials
 from pathlib import Path
+
+from click.testing import CliRunner
+
+from cisco_status.cli import RouterCredentials, cli
 
 
 class MyRouter:
@@ -33,11 +35,10 @@ Gi0/0/1     2    110 P Active  local           82.0.0.10       82.0.0.9
         return MyRouter(creds)
 
 
-
-
 def test_cli(monkeypatch, tmp_path: Path):
     tmp_config_file = tmp_path / "hsrp-config.json"
-    tmp_config_file.write_text(r"""{
+    tmp_config_file.write_text(
+        r"""{
     "hsrp": [
         {
             "name": "CE1",
@@ -64,12 +65,26 @@ def test_cli(monkeypatch, tmp_path: Path):
             "state": "Active"
         }
     ]
-}""")
+}"""
+    )
 
     monkeypatch.setattr("cisco_status.cli.CiscoRouter", MyRouter)
     runner = CliRunner()
-    result = runner.invoke(cli, ["hsrp-status", "--hsrp-config-file", tmp_config_file.as_posix(), "--router-credentials", "CE1,host-1,username-1,password-1", "--router-credentials", "CE2,host-2,username-2,password-2"])
-    assert result.output == """[
+    result = runner.invoke(
+        cli,
+        [
+            "hsrp-status",
+            "--hsrp-config-file",
+            tmp_config_file.as_posix(),
+            "--router-credentials",
+            "CE1,host-1,username-1,password-1",
+            "--router-credentials",
+            "CE2,host-2,username-2,password-2",
+        ],
+    )
+    assert (
+        result.output
+        == """[
   {
     "CE1": {
       "Gi0/0/1": [
@@ -100,13 +115,14 @@ def test_cli(monkeypatch, tmp_path: Path):
   }
 ]
 """
+    )
     assert result.exit_code == 0
-
 
 
 def test_cli_fail(monkeypatch, tmp_path: Path):
     tmp_config_file = tmp_path / "hsrp-config.json"
-    tmp_config_file.write_text(r"""{
+    tmp_config_file.write_text(
+        r"""{
     "hsrp": [
         {
             "name": "CE1",
@@ -133,12 +149,26 @@ def test_cli_fail(monkeypatch, tmp_path: Path):
             "state": "Active"
         }
     ]
-}""")
+}"""
+    )
 
     monkeypatch.setattr("cisco_status.cli.CiscoRouter", MyRouter)
     runner = CliRunner()
-    result = runner.invoke(cli, ["hsrp-status", "--hsrp-config-file", tmp_config_file.as_posix(), "--router-credentials", "CE1,host-1,username-1,password-1", "--router-credentials", "CE2,host-2,username-2,password-2"])
-    assert result.output == """[
+    result = runner.invoke(
+        cli,
+        [
+            "hsrp-status",
+            "--hsrp-config-file",
+            tmp_config_file.as_posix(),
+            "--router-credentials",
+            "CE1,host-1,username-1,password-1",
+            "--router-credentials",
+            "CE2,host-2,username-2,password-2",
+        ],
+    )
+    assert (
+        result.output
+        == """[
   {
     "CE1": {
       "Gi0/0/1": [
@@ -169,4 +199,5 @@ def test_cli_fail(monkeypatch, tmp_path: Path):
   }
 ]
 """
+    )
     assert result.exit_code == 0
