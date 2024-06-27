@@ -16,12 +16,15 @@ jobs:
       matrix:
         python-version: ["3.12"]
     steps:
+
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
+
       - uses: pdm-project/setup-pdm@v3
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: build
         id: build
         run: |
@@ -29,14 +32,20 @@ jobs:
           echo "RELEASE_FILE_WHL=$(ls dist/*.whl)" >> "$GITHUB_OUTPUT"
           echo "RELEASE_FILE_TAR=$(ls dist/*.tar.gz)" >> "$GITHUB_OUTPUT"
           echo "RELEASE_VERSION=$(pdm show --version)" >> "$GITHUB_OUTPUT"
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: |
-            ${{ steps.build.outputs.RELEASE_FILE_WHL }}
-            ${{ steps.build.outputs.RELEASE_FILE_TAR }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.build.outputs.RELEASE_VERSION }}
+
+      - name: Create Fake Release
+        run: |
+            echo "Creating Release..."
+
+      # - name: Create Release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: |
+      #       ${{ steps.build.outputs.RELEASE_FILE_WHL }}
+      #       ${{ steps.build.outputs.RELEASE_FILE_TAR }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: ${{ steps.build.outputs.RELEASE_VERSION }}
+
       - name: PyPi Publish Fake
         run: |
             echo "Publishing..."
