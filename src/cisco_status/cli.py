@@ -16,6 +16,7 @@ def cli() -> None:
 
 @cli.command()  # type: ignore
 @click.option(  # type: ignore
+    "-c",
     "--hsrp-config-file",
     type=click.Path(exists=True, readable=True, file_okay=True, dir_okay=False, path_type=Path),
     required=True,
