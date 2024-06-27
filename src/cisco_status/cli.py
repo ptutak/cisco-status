@@ -19,8 +19,9 @@ def cli() -> None:
     "--hsrp-config-file",
     type=click.Path(exists=True, readable=True, file_okay=True, dir_okay=False, path_type=Path),
     required=True,
+    help="HSRP desired config file path.",
 )
-@click.option("-r", "--router-credentials", multiple=True, type=str, required=True)  # type: ignore
+@click.option("-r", "--router-credentials", multiple=True, type=str, required=True, help="Provide router credentials in the format: Name,Host,Username,Password[,Secret]")  # type: ignore
 def hsrp_status(
     hsrp_config_file: Path,
     router_credentials: list[str],
