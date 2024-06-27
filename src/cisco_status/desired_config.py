@@ -8,6 +8,7 @@ from .const import HSRPState
 
 class DesiredHSRPConfig(BaseModel):  # type:ignore
     """Desired HSRP configuration."""
+
     model_config = ConfigDict(extra="forbid")
 
     name: str
@@ -24,7 +25,7 @@ class DesiredHSRPConfig(BaseModel):  # type:ignore
         Returns:
             DesiredHSRPConfig: Desired HSRP configuration instance.
         """
-        return DesiredHSRPConfig.model_validate(router_desired_config)
+        return DesiredHSRPConfig.model_validate(router_desired_config)  # type:ignore
 
 
 def parse_desired_hsrp_config(config: str) -> list[DesiredHSRPConfig]:

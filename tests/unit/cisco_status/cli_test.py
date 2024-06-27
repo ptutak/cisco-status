@@ -39,7 +39,7 @@ def test_resolve_router_config():
     result = resolve_router_config(credentials, desired_configs, MyRouter)
 
     assert result == [
-        {"CE1":[{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Pass"}]},
+        {"CE1": [{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Pass"}]},
         {"CE2": [{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Pass"}]},
     ]
 
@@ -61,14 +61,14 @@ def test_resolve_router_config_fail():
     assert result == [
         {
             "CE1": [
-                    {"group": "Group 1", "status": "Fail - No longer Standby"},
-                    {"group": "Group 2", "status": "Pass"},
-                ]
+                {"group": "Group 1", "status": "Fail - No longer Standby"},
+                {"group": "Group 2", "status": "Pass"},
+            ]
         },
         {
             "CE2": [
-                    {"group": "Group 1", "status": "Pass"},
-                    {"group": "Group 2", "status": "Fail - No longer Standby"},
-                ]
+                {"group": "Group 1", "status": "Pass"},
+                {"group": "Group 2", "status": "Fail - No longer Standby"},
+            ]
         },
     ]

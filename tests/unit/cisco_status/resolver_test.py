@@ -19,8 +19,8 @@ def test_resolver():
         "CE1",
         MyRouter(),
         [
-            DesiredHSRPConfig(name="CE1",group=1, state=HSRPState.Active),
-            DesiredHSRPConfig(name="CE1",group=2, state=HSRPState.Standby),
+            DesiredHSRPConfig(name="CE1", group=1, state=HSRPState.Active),
+            DesiredHSRPConfig(name="CE1", group=2, state=HSRPState.Standby),
         ],
     )
 
@@ -34,14 +34,14 @@ def test_resolver_fail():
         "CE1",
         MyRouter(),
         [
-            DesiredHSRPConfig(name="CE1",group=1, state=HSRPState.Standby),
-            DesiredHSRPConfig(name="CE1",group=2, state=HSRPState.Standby),
+            DesiredHSRPConfig(name="CE1", group=1, state=HSRPState.Standby),
+            DesiredHSRPConfig(name="CE1", group=2, state=HSRPState.Standby),
         ],
     )
 
     assert resolver.resolve_router_config() == {
         "CE1": [
-                {"group": "Group 1", "status": "Fail - No longer Standby"},
-                {"group": "Group 2", "status": "Pass"},
-            ]
+            {"group": "Group 1", "status": "Fail - No longer Standby"},
+            {"group": "Group 2", "status": "Pass"},
+        ]
     }

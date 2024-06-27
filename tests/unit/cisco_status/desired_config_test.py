@@ -35,8 +35,8 @@ def test_parse_desired_config():
     result = parse_desired_hsrp_config(desired_config)
 
     expected_result = [
-        DesiredHSRPConfig(name="CE1",group=1, state=HSRPState.Active),
-        DesiredHSRPConfig(name="CE1",group=2, state=HSRPState.Standby),
+        DesiredHSRPConfig(name="CE1", group=1, state=HSRPState.Active),
+        DesiredHSRPConfig(name="CE1", group=2, state=HSRPState.Standby),
     ]
 
     assert result == expected_result
