@@ -43,12 +43,12 @@ def parse_desired_hsrp_config(config: str) -> list[DesiredHSRPConfig]:
     """
     parsed_config: dict[str, Any] = json.loads(config)
     if "hsrp" not in parsed_config:
-        raise RuntimeError("Invalid config")
+        raise RuntimeError("Invalid config - ho 'hsrp' section")
 
     router_configs: list[DesiredHSRPConfig] = []
     for router_config in parsed_config["hsrp"]:
         if len(router_config) != 1:
-            raise RuntimeError("Invalid config")
+            raise RuntimeError("Invalid config - more than one router name for each router.")
         router_config = cast(dict[str, Any], router_config)
         router_name, desired_hsrp_configs = next(iter(router_config.items()))
         for desired_config in desired_hsrp_configs:

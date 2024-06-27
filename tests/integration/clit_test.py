@@ -201,3 +201,29 @@ def test_cli_fail(mock_cisco_router, tmp_path: Path):
 """
     )
     assert result.exit_code == 0
+
+
+def test_cli_fail_parse(mock_cisco_router, tmp_path: Path):
+    tmp_config_file = tmp_path / "hsrp-config.json"
+    tmp_config_file.write_text(
+        r"""{
+    "hsrp": ""
+}"""
+    )
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "hsrp-status",
+            "--hsrp-config-file",
+            tmp_config_file.as_posix(),
+            "--router-credentials",
+            "CE1,host-1,username-1,password-1",
+            "--router-credentials",
+            "CE2,host-2,username-2,password-2",
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert str(result.exception) == "Router: CE1 has no desired state."
