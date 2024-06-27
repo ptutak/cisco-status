@@ -113,7 +113,16 @@ class ShowStandbyBrief(Command):
 
         for row in textfsm_output:
             configs.append(
-                StandbyConfig(row[0], int(row[1]), int(row[2]), True if row[3] == "P" else False, HSRPState(row[4]), row[5], row[6], row[7])
+                StandbyConfig(
+                    row[0],
+                    int(row[1]),
+                    int(row[2]),
+                    True if row[3] == "P" else False,
+                    HSRPState(row[4]),
+                    row[5],
+                    row[6],
+                    row[7],
+                )
             )
 
         return cls(configs)
