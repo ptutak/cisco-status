@@ -56,10 +56,12 @@ def test_show_standby_brief():
 Interface   Grp  Pri P State   Active          Standby         Virtual IP
 Gi0/0/1     1    110 P Active  local           82.0.0.3        82.0.0.1
 Gi0/0/1     2    105 P Standby 82.0.0.11       local           82.0.0.9
+Gi0/0/1     2    105   Standby 82.0.0.11       local           82.0.0.9
 """
     )
 
     assert result.config == [
-        StandbyConfig("Gi0/0/1", 1, 110, "P", HSRPState.Active, "local", "82.0.0.3", "82.0.0.1"),
-        StandbyConfig("Gi0/0/1", 2, 105, "P", HSRPState.Standby, "82.0.0.11", "local", "82.0.0.9"),
+        StandbyConfig("Gi0/0/1", 1, 110, True, HSRPState.Active, "local", "82.0.0.3", "82.0.0.1"),
+        StandbyConfig("Gi0/0/1", 2, 105, True, HSRPState.Standby, "82.0.0.11", "local", "82.0.0.9"),
+        StandbyConfig("Gi0/0/1", 2, 105, False, HSRPState.Standby, "82.0.0.11", "local", "82.0.0.9"),
     ]
