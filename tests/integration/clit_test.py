@@ -47,24 +47,28 @@ def test_cli(mock_cisco_router, tmp_path: Path):
         r"""{
     "hsrp": [
         {
-            "name": "CE1",
-            "group": 1,
-            "state": "Active"
+            "CE1": [
+                {
+                    "group": 1,
+                    "state": "Active"
+                },
+                {
+                    "group": 2,
+                    "state": "Standby"
+                }
+            ]
         },
         {
-            "name": "CE1",
-            "group": 2,
-            "state": "Standby"
-        },
-        {
-            "name": "CE2",
-            "group": 1,
-            "state": "Standby"
-        },
-        {
-            "name": "CE2",
-            "group": 2,
-            "state": "Active"
+            "CE2": [
+                {
+                    "group": 1,
+                    "state": "Standby"
+                },
+                {
+                    "group": 2,
+                    "state": "Active"
+                }
+            ]
         }
     ]
 }"""
@@ -85,34 +89,35 @@ def test_cli(mock_cisco_router, tmp_path: Path):
     )
     assert (
         result.output
-        == """[
-  {
-    "CE1": [
-      {
-        "group": "Group 1",
-        "status": "Pass"
-      },
-      {
-        "group": "Group 2",
-        "status": "Pass"
-      }
-    ]
-  },
-  {
-    "CE2": [
-      {
-        "group": "Group 1",
-        "status": "Pass"
-      },
-      {
-        "group": "Group 2",
-        "status": "Pass"
-      }
-    ]
-  }
-]
-"""
-    )
+        == """{
+  "hsrp": [
+    {
+      "CE1": [
+        {
+          "group": "Group 1",
+          "status": "Pass"
+        },
+        {
+          "group": "Group 2",
+          "status": "Pass"
+        }
+      ]
+    },
+    {
+      "CE2": [
+        {
+          "group": "Group 1",
+          "status": "Pass"
+        },
+        {
+          "group": "Group 2",
+          "status": "Pass"
+        }
+      ]
+    }
+  ]
+}
+""")
     assert result.exit_code == 0
 
 
@@ -122,24 +127,28 @@ def test_cli_fail(mock_cisco_router, tmp_path: Path):
         r"""{
     "hsrp": [
         {
-            "name": "CE1",
-            "group": 1,
-            "state": "Standby"
+            "CE1": [
+                {
+                    "group": 1,
+                    "state": "Standby"
+                },
+                {
+                    "group": 2,
+                    "state": "Standby"
+                }
+            ]
         },
         {
-            "name": "CE1",
-            "group": 2,
-            "state": "Standby"
-        },
-        {
-            "name": "CE2",
-            "group": 1,
-            "state": "Active"
-        },
-        {
-            "name": "CE2",
-            "group": 2,
-            "state": "Active"
+            "CE2": [
+                {
+                    "group": 1,
+                    "state": "Active"
+                },
+                {
+                    "group": 2,
+                    "state": "Active"
+                }
+            ]
         }
     ]
 }"""
@@ -160,32 +169,34 @@ def test_cli_fail(mock_cisco_router, tmp_path: Path):
     )
     assert (
         result.output
-        == """[
-  {
-    "CE1": [
-      {
-        "group": "Group 1",
-        "status": "Fail - No longer Standby"
-      },
-      {
-        "group": "Group 2",
-        "status": "Pass"
-      }
-    ]
-  },
-  {
-    "CE2": [
-      {
-        "group": "Group 1",
-        "status": "Fail - No longer Active"
-      },
-      {
-        "group": "Group 2",
-        "status": "Pass"
-      }
-    ]
-  }
-]
+        == """{
+  "hsrp": [
+    {
+      "CE1": [
+        {
+          "group": "Group 1",
+          "status": "Fail - No longer Standby"
+        },
+        {
+          "group": "Group 2",
+          "status": "Pass"
+        }
+      ]
+    },
+    {
+      "CE2": [
+        {
+          "group": "Group 1",
+          "status": "Fail - No longer Active"
+        },
+        {
+          "group": "Group 2",
+          "status": "Pass"
+        }
+      ]
+    }
+  ]
+}
 """
     )
     assert result.exit_code == 0

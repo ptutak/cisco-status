@@ -38,7 +38,7 @@ def hsrp_status(
 
     result = resolve_router_config(routers, desired_router_config, CiscoRouter)
 
-    click.echo(json.dumps(result, indent=2))
+    click.echo(json.dumps({"hsrp":result}, indent=2))
 
 
 def resolve_router_config(

@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, cast
 
 from pydantic import BaseModel, ConfigDict
 
@@ -16,7 +16,7 @@ class DesiredHSRPConfig(BaseModel):  # type:ignore
     state: HSRPState
 
     @classmethod
-    def from_dict(cls, router_desired_config: dict[str, Any]) -> "DesiredHSRPConfig":
+    def from_dict(cls, name: str, router_desired_config: dict[str, Any]) -> "DesiredHSRPConfig":
         """Create a DesiredHSRPConfig instance from a dictionary.
 
         Args:
@@ -25,7 +25,7 @@ class DesiredHSRPConfig(BaseModel):  # type:ignore
         Returns:
             DesiredHSRPConfig: Desired HSRP configuration instance.
         """
-        return DesiredHSRPConfig.model_validate(router_desired_config)  # type:ignore
+        return DesiredHSRPConfig(name=name, **router_desired_config)
 
 
 def parse_desired_hsrp_config(config: str) -> list[DesiredHSRPConfig]:
@@ -46,6 +46,11 @@ def parse_desired_hsrp_config(config: str) -> list[DesiredHSRPConfig]:
 
     router_configs: list[DesiredHSRPConfig] = []
     for router_config in parsed_config["hsrp"]:
-        router_configs.append(DesiredHSRPConfig.from_dict(router_config))
+        if len(router_config) != 1:
+            raise RuntimeError("Invalid config")
+        router_config = cast(dict[str, Any], router_config)
+        router_name, desired_hsrp_configs = next(iter(router_config.items()))
+        for desired_config in desired_hsrp_configs:
+            router_configs.append(DesiredHSRPConfig.from_dict(router_name, desired_config))
 
     return router_configs

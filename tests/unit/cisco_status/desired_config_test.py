@@ -4,12 +4,11 @@ from cisco_status.desired_config import DesiredHSRPConfig, parse_desired_hsrp_co
 
 def test_desired_config_parse():
     config = {
-        "name": "CE1",
         "group": 1,
         "state": "Active",
     }
 
-    result = DesiredHSRPConfig.from_dict(config)
+    result = DesiredHSRPConfig.from_dict("CE1", config)
 
     assert result.name == "CE1"
     assert result.group == 1
@@ -20,14 +19,16 @@ def test_parse_desired_config():
     desired_config = """{
     "hsrp": [
         {
-            "name": "CE1",
-            "group": 1,
-            "state": "Active"
-        },
-        {
-            "name": "CE1",
-            "group": 2,
-            "state": "Standby"
+            "CE1": [
+                {
+                    "group": 1,
+                    "state": "Active"
+                },
+                {
+                    "group": 2,
+                    "state": "Standby"
+                }
+            ]
         }
     ]
 }
