@@ -1,0 +1,1 @@
+include src/cisco_status/template_commands/*.textfsm
