@@ -45,7 +45,7 @@ def resolve_router_config(
     routers_credentials: list[RouterCredentials],
     routers_config: list[DesiredHSRPConfig],
     router: type[Router],
-) -> list[dict[str, dict[str, list[dict[str, str]]]]]:
+) -> list[dict[str, list[dict[str, str]]]]:
     """Resolve the router config.
 
     Args:
@@ -57,10 +57,10 @@ def resolve_router_config(
         RuntimeError: If the router has no desired state.
 
     Returns:
-        list[dict[str, dict[str, list[dict[str, str]]]]]: List of resolved router config.
+        list[dict[str, list[dict[str, str]]]]: List of resolved router config.
     """
     desired_router_config = _contract_router_configs(routers_config)
-    router_result: list[dict[str, dict[str, list[dict[str, str]]]]] = []
+    router_result: list[dict[str, list[dict[str, str]]]] = []
 
     # to make it more efficient we could use async parallelization here
     # but I didn't want to overcomplicate the code

@@ -31,16 +31,16 @@ def test_resolve_router_config():
     ]
 
     desired_configs = [
-        DesiredHSRPConfig(name="CE1", interface="Gi0/0/1", group=1, state=HSRPState.Active),
-        DesiredHSRPConfig(name="CE1", interface="Gi0/0/1", group=2, state=HSRPState.Standby),
-        DesiredHSRPConfig(name="CE2", interface="Gi0/0/1", group=1, state=HSRPState.Standby),
-        DesiredHSRPConfig(name="CE2", interface="Gi0/0/1", group=2, state=HSRPState.Active),
+        DesiredHSRPConfig(name="CE1", group=1, state=HSRPState.Active),
+        DesiredHSRPConfig(name="CE1", group=2, state=HSRPState.Standby),
+        DesiredHSRPConfig(name="CE2", group=1, state=HSRPState.Standby),
+        DesiredHSRPConfig(name="CE2", group=2, state=HSRPState.Active),
     ]
     result = resolve_router_config(credentials, desired_configs, MyRouter)
 
     assert result == [
-        {"CE1": {"Gi0/0/1": [{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Pass"}]}},
-        {"CE2": {"Gi0/0/1": [{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Pass"}]}},
+        {"CE1":[{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Pass"}]},
+        {"CE2": [{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Pass"}]},
     ]
 
 
@@ -51,28 +51,24 @@ def test_resolve_router_config_fail():
     ]
 
     desired_configs = [
-        DesiredHSRPConfig(name="CE1", interface="Gi0/0/1", group=1, state=HSRPState.Standby),
-        DesiredHSRPConfig(name="CE1", interface="Gi0/0/1", group=2, state=HSRPState.Standby),
-        DesiredHSRPConfig(name="CE2", interface="Gi0/0/1", group=1, state=HSRPState.Standby),
-        DesiredHSRPConfig(name="CE2", interface="Gi0/0/1", group=2, state=HSRPState.Standby),
+        DesiredHSRPConfig(name="CE1", group=1, state=HSRPState.Standby),
+        DesiredHSRPConfig(name="CE1", group=2, state=HSRPState.Standby),
+        DesiredHSRPConfig(name="CE2", group=1, state=HSRPState.Standby),
+        DesiredHSRPConfig(name="CE2", group=2, state=HSRPState.Standby),
     ]
     result = resolve_router_config(credentials, desired_configs, MyRouter)
 
     assert result == [
         {
-            "CE1": {
-                "Gi0/0/1": [
+            "CE1": [
                     {"group": "Group 1", "status": "Fail - No longer Standby"},
                     {"group": "Group 2", "status": "Pass"},
                 ]
-            }
         },
         {
-            "CE2": {
-                "Gi0/0/1": [
+            "CE2": [
                     {"group": "Group 1", "status": "Pass"},
                     {"group": "Group 2", "status": "Fail - No longer Standby"},
                 ]
-            }
         },
     ]

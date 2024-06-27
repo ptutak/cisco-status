@@ -1,16 +1,16 @@
 import json
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from .const import HSRPState
 
 
 class DesiredHSRPConfig(BaseModel):  # type:ignore
     """Desired HSRP configuration."""
+    model_config = ConfigDict(extra="forbid")
 
     name: str
-    interface: str
     group: int
     state: HSRPState
 
@@ -24,7 +24,7 @@ class DesiredHSRPConfig(BaseModel):  # type:ignore
         Returns:
             DesiredHSRPConfig: Desired HSRP configuration instance.
         """
-        return cls(**router_desired_config)
+        return DesiredHSRPConfig.model_validate(router_desired_config)
 
 
 def parse_desired_hsrp_config(config: str) -> list[DesiredHSRPConfig]:

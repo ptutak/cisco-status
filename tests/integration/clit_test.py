@@ -42,25 +42,21 @@ def test_cli(monkeypatch, tmp_path: Path):
     "hsrp": [
         {
             "name": "CE1",
-            "interface": "Gi0/0/1",
             "group": 1,
             "state": "Active"
         },
         {
             "name": "CE1",
-            "interface": "Gi0/0/1",
             "group": 2,
             "state": "Standby"
         },
         {
             "name": "CE2",
-            "interface": "Gi0/0/1",
             "group": 1,
             "state": "Standby"
         },
         {
             "name": "CE2",
-            "interface": "Gi0/0/1",
             "group": 2,
             "state": "Active"
         }
@@ -86,32 +82,28 @@ def test_cli(monkeypatch, tmp_path: Path):
         result.output
         == """[
   {
-    "CE1": {
-      "Gi0/0/1": [
-        {
-          "group": "Group 1",
-          "status": "Pass"
-        },
-        {
-          "group": "Group 2",
-          "status": "Pass"
-        }
-      ]
-    }
+    "CE1": [
+      {
+        "group": "Group 1",
+        "status": "Pass"
+      },
+      {
+        "group": "Group 2",
+        "status": "Pass"
+      }
+    ]
   },
   {
-    "CE2": {
-      "Gi0/0/1": [
-        {
-          "group": "Group 1",
-          "status": "Pass"
-        },
-        {
-          "group": "Group 2",
-          "status": "Pass"
-        }
-      ]
-    }
+    "CE2": [
+      {
+        "group": "Group 1",
+        "status": "Pass"
+      },
+      {
+        "group": "Group 2",
+        "status": "Pass"
+      }
+    ]
   }
 ]
 """
@@ -126,25 +118,21 @@ def test_cli_fail(monkeypatch, tmp_path: Path):
     "hsrp": [
         {
             "name": "CE1",
-            "interface": "Gi0/0/1",
             "group": 1,
             "state": "Standby"
         },
         {
             "name": "CE1",
-            "interface": "Gi0/0/1",
             "group": 2,
             "state": "Standby"
         },
         {
             "name": "CE2",
-            "interface": "Gi0/0/1",
             "group": 1,
             "state": "Active"
         },
         {
             "name": "CE2",
-            "interface": "Gi0/0/1",
             "group": 2,
             "state": "Active"
         }
@@ -170,32 +158,28 @@ def test_cli_fail(monkeypatch, tmp_path: Path):
         result.output
         == """[
   {
-    "CE1": {
-      "Gi0/0/1": [
-        {
-          "group": "Group 1",
-          "status": "Fail - No longer Standby"
-        },
-        {
-          "group": "Group 2",
-          "status": "Pass"
-        }
-      ]
-    }
+    "CE1": [
+      {
+        "group": "Group 1",
+        "status": "Fail - No longer Standby"
+      },
+      {
+        "group": "Group 2",
+        "status": "Pass"
+      }
+    ]
   },
   {
-    "CE2": {
-      "Gi0/0/1": [
-        {
-          "group": "Group 1",
-          "status": "Fail - No longer Active"
-        },
-        {
-          "group": "Group 2",
-          "status": "Pass"
-        }
-      ]
-    }
+    "CE2": [
+      {
+        "group": "Group 1",
+        "status": "Fail - No longer Active"
+      },
+      {
+        "group": "Group 2",
+        "status": "Pass"
+      }
+    ]
   }
 ]
 """

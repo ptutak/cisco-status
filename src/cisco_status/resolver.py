@@ -18,7 +18,7 @@ class RouterHSRPResolver:
         self._router = router
         self._desired_config = routers_desired_config
 
-    def resolve_router_config(self) -> dict[str, dict[str, list[dict[str, str]]]]:
+    def resolve_router_config(self) -> dict[str, list[dict[str, str]]]:
         """Resolve the router config.
 
         Returns:
@@ -30,23 +30,20 @@ class RouterHSRPResolver:
 
     def _get_router_standby_config(
         self, config: list[StandbyConfig], desired_config: list[DesiredHSRPConfig]
-    ) -> dict[str, dict[str, list[dict[str, str]]]]:
-        result: dict[str, dict[str, list[dict[str, str]]]] = {self._name: {}}
+    ) -> dict[str, list[dict[str, str]]]:
+        result: dict[str, list[dict[str, str]]] = {self._name: []}
         for desired_config_entry in desired_config:
             passed = False
             for real_config in config:
                 if (
-                    desired_config_entry.interface == real_config.Interface
-                    and desired_config_entry.group == real_config.Group
+                    desired_config_entry.group == real_config.Group
                     and desired_config_entry.state == real_config.State
                 ):
                     passed = True
                     break
 
-            if desired_config_entry.interface not in result[self._name]:
-                result[self._name][desired_config_entry.interface] = []
 
-            result[self._name][desired_config_entry.interface].append(
+            result[self._name].append(
                 {
                     "group": f"Group {desired_config_entry.group}",
                     "status": "Pass" if passed else f"Fail - No longer {desired_config_entry.state.value}",
