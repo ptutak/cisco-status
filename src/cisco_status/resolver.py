@@ -35,7 +35,7 @@ class RouterHSRPResolver:
         for desired_config_entry in desired_config:
             passed = False
             for real_config in config:
-                if desired_config_entry.group == real_config.Group and desired_config_entry.state == real_config.State:
+                if desired_config_entry.group == real_config.group and desired_config_entry.state == real_config.state:
                     passed = True
                     break
 

@@ -76,14 +76,14 @@ class CiscoConfigCommandParser:
 class StandbyConfig:
     """Standby configuration."""
 
-    Interface: str
-    Group: int
-    Priority: int
-    Preemptive: bool
-    State: HSRPState
-    Active: str
-    Standby: str
-    VirtualIP: str
+    interface: str
+    group: int
+    priority: int
+    preemptive: bool
+    state: HSRPState
+    active: str
+    standby: str
+    virtualIP: str
 
 
 class ShowStandbyBrief(Command):
