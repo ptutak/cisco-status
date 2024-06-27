@@ -21,10 +21,10 @@ pip install .
 
 ## usage
 
+For help type the following command:
 ```bash
 python -m cisco_status.cli --help
 ```
-
 
 ## development
 
@@ -45,6 +45,12 @@ pytest --cov
 
 ### hsrp-status
 The command accepts hsrp desired configuration in the format:
+
+Typical usage:
+```bash
+python -m cisco_status.cli hsrp-status -r CE1,host-1,username-1,password-1 -r CE2,host-2,username-2,password-2 -d hsrp-desired.json
+```
+
 ```json
 {
     "hsrp": [
