@@ -41,6 +41,8 @@ To run the tests, run the following command:
 pytest --cov
 ```
 
+Currently there are no e2e tests because of a lack of a device or a proper virtual device.
+
 ## commands
 
 ### hsrp-status
