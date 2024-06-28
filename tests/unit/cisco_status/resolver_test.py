@@ -29,6 +29,21 @@ def test_resolver():
     }
 
 
+def test_resolver_with_interface():
+    resolver = RouterHSRPResolver(
+        "CE1",
+        MyRouter(),
+        [
+            DesiredHSRPConfig(name="CE1", group=1, state=HSRPState.Active, interface="Gi0/0/1"),
+            DesiredHSRPConfig(name="CE1", group=2, state=HSRPState.Standby, interface="Gi0/0/2"),
+        ],
+    )
+
+    assert resolver.resolve_router_config() == {
+        "CE1": [{"group": "Group 1", "status": "Pass"}, {"group": "Group 2", "status": "Fail - No longer Standby"}]
+    }
+
+
 def test_resolver_fail():
     resolver = RouterHSRPResolver(
         "CE1",

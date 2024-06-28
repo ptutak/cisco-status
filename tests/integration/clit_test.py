@@ -50,7 +50,8 @@ def test_cli(mock_cisco_router, tmp_path: Path):
             "CE1": [
                 {
                     "group": 1,
-                    "state": "Active"
+                    "state": "Active",
+                    "interface": "Gi0/0/1"
                 },
                 {
                     "group": 2,
@@ -147,7 +148,8 @@ def test_cli_fail(mock_cisco_router, tmp_path: Path):
                 },
                 {
                     "group": 2,
-                    "state": "Active"
+                    "state": "Active",
+                    "interface": "Gi0/0/2"
                 }
             ]
         }
@@ -192,7 +194,7 @@ def test_cli_fail(mock_cisco_router, tmp_path: Path):
         },
         {
           "group": "Group 2",
-          "status": "Pass"
+          "status": "Fail - No longer Active"
         }
       ]
     }

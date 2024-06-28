@@ -46,7 +46,7 @@ Currently there are no e2e tests because of a lack of a device or a proper virtu
 ## commands
 
 ### hsrp-status
-The command accepts hsrp desired configuration in the format:
+The command accepts hsrp desired configuration in the format below.
 
 Typical usage:
 ```bash
@@ -60,7 +60,8 @@ python -m cisco_status.cli hsrp-status -r CE1,host-1,username-1,password-1 -r CE
             "CE1": [
                 {
                     "group": 1,
-                    "status": "Active"
+                    "status": "Active",
+                    "interface": "Gi0/0/1"
                 },
                 {
                     "group": 2,

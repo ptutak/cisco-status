@@ -13,6 +13,7 @@ class DesiredHSRPConfig(BaseModel):  # type:ignore
 
     name: str
     group: int
+    interface: str | None = None
     state: HSRPState
 
     @classmethod

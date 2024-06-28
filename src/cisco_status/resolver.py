@@ -37,7 +37,7 @@ class RouterHSRPResolver:
         for desired_config_entry in desired_config:
             passed = False
             for real_config in config:
-                if desired_config_entry.group == real_config.group and desired_config_entry.state == real_config.state:
+                if self._check_config(real_config, desired_config_entry):
                     passed = True
                     break
 
@@ -48,3 +48,12 @@ class RouterHSRPResolver:
                 }
             )
         return result
+
+    def _check_config(self, standby_config: StandbyConfig, desired_config: DesiredHSRPConfig) -> bool:
+        if desired_config.interface is not None:
+            return (
+                desired_config.group == standby_config.group
+                and desired_config.state == standby_config.state
+                and desired_config.interface == standby_config.interface
+            )
+        return desired_config.group == standby_config.group and desired_config.state == standby_config.state
