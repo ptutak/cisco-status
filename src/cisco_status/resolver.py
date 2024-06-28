@@ -32,6 +32,8 @@ class RouterHSRPResolver:
         self, config: list[StandbyConfig], desired_config: list[DesiredHSRPConfig]
     ) -> dict[str, list[dict[str, str]]]:
         result: dict[str, list[dict[str, str]]] = {self._name: []}
+
+        # we could use a more efficient algorithm here in case of large number of desired configs
         for desired_config_entry in desired_config:
             passed = False
             for real_config in config:
